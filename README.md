@@ -1,986 +1,522 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Vision - Text to Video</title>
+    <title>AETHER | Professional AI Video Studio</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo">
-            <i class="fa-solid fa-robot"></i> AI Vision
-        </div>
-        <ul class="nav-links">
-            <li><a href="#">Beranda</a></li>
-            <li><a href="#">Fitur</a></li>
-            <li><a href="#">Harga</a></li>
-            <li><a href="#" class="btn-login">Masuk</a></li>
-        </ul>
-    </nav>
-
-    <header class="hero">
-        <h1>Ubah Imajinasi Menjadi <span class="gradient-text">Video Realistis</span></h1>
-        <p>Ketik deskripsi teks apa saja, dan AI kami akan merendernya menjadi video dalam hitungan detik.</p>
-    </header>
-
-    <main class="app-container">
-        
-        <section class="input-section">
-            <div class="input-group">
-                <label for="prompt">Deskripsi Video (Prompt)</label>
-                <textarea id="prompt" placeholder="Contoh: Seekor kucing astronot sedang berjalan di permukaan bulan dengan latar belakang bumi..."></textarea>
+    <div class="app-wrapper">
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="ri-movie-2-ai-line"></i> <span>AETHER</span>
             </div>
-
-            <div class="options-group">
-                <div class="select-box">
-                    <label>Gaya Visual</label>
-                    <select id="style-select">
-                        <option value="realistic">Realistis</option>
-                        <option value="anime">Anime / Kartun</option>
-                        <option value="cinematic">Sinematik 4K</option>
-                        <option value="3d">3D Render</option>
-                    </select>
-                </div>
-                <div class="select-box">
-                    <label>Durasi</label>
-                    <select id="duration-select">
-                        <option value="5">5 Detik</option>
-                        <option value="10">10 Detik</option>
-                    </select>
+            <ul class="nav-menu">
+                <li class="active"><a href="#"><i class="ri-dashboard-line"></i> Studio</a></li>
+                <li><a href="#"><i class="ri-gallery-line"></i> Gallery</a></li>
+                <li><a href="#"><i class="ri-settings-4-line"></i> Settings</a></li>
+                <li><a href="#"><i class="ri-vip-crown-line"></i> Upgrade Pro</a></li>
+            </ul>
+            <div class="user-profile">
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="User">
+                <div class="user-info">
+                    <h4>Creator Mode</h4>
+                    <p>Free Tier</p>
                 </div>
             </div>
+        </aside>
 
-            <button id="generate-btn" onclick="generateVideo()">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Buat Video Sekarang
-            </button>
-        </section>
-
-        <section class="output-section" id="output-area">
+        <main class="main-content">
             
-            <div id="placeholder-view" class="view-state active">
-                <i class="fa-solid fa-film"></i>
-                <p>Video hasil akan muncul di sini</p>
-            </div>
+            <header class="top-bar">
+                <div class="breadcrumbs">
+                    <span>Studio</span> <i class="ri-arrow-right-s-line"></i> <span class="current">Text to Video</span>
+                </div>
+                <div class="credits">
+                    <i class="ri-coins-line"></i> <span>120 Credits Left</span>
+                </div>
+            </header>
 
-            <div id="loading-view" class="view-state">
-                <div class="loader"></div>
-                <p id="loading-text">Sedang memproses AI...</p>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progress-fill"></div>
+            <div class="studio-grid">
+                
+                <div class="panel controls-panel">
+                    <h3><i class="ri-magic-line"></i> Prompt Engineering</h3>
+                    
+                    <div class="form-group">
+                        <label>Deskripsi Video</label>
+                        <textarea id="promptInput" placeholder="Deskripsikan imajinasi Anda sedetail mungkin... (Contoh: Cyberpunk city, neon lights, rainy street, 8k render)"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Negative Prompt (Opsional)</label>
+                        <input type="text" id="negativePrompt" placeholder="Apa yang TIDAK ingin Anda lihat? (Contoh: blur, distorted, low quality)">
+                    </div>
+
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <label>Rasio Aspek</label>
+                            <div class="aspect-selector">
+                                <button class="aspect-btn active" data-ratio="16:9">16:9</button>
+                                <button class="aspect-btn" data-ratio="9:16">9:16</button>
+                                <button class="aspect-btn" data-ratio="1:1">1:1</button>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label>Model Style</label>
+                            <select id="styleSelect">
+                                <option value="realistic">Hyper Realistic</option>
+                                <option value="anime">Japanese Anime</option>
+                                <option value="3d">Pixar Style 3D</option>
+                                <option value="cyberpunk">Cyberpunk</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button id="generateBtn" onclick="startGeneration()">
+                        <span>Generate Video</span>
+                        <div class="btn-glow"></div>
+                    </button>
+                </div>
+
+                <div class="panel preview-panel">
+                    
+                    <div id="placeholderState" class="state-view active">
+                        <div class="empty-state">
+                            <i class="ri-film-line"></i>
+                            <h3>Siap untuk Berkreasi?</h3>
+                            <p>Masukkan prompt di panel kiri untuk memulai rendering AI.</p>
+                        </div>
+                    </div>
+
+                    <div id="processingState" class="state-view">
+                        <div class="terminal-loader">
+                            <div class="spinner-ring"></div>
+                            <div class="terminal-log" id="terminalLog">
+                                <p>> Initializing GPU cluster...</p>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="progressBar"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="resultState" class="state-view">
+                        <div class="video-container">
+                            <video id="outputVideo" controls loop playsinline></video>
+                            <div class="video-overlay">
+                                <span class="badge">HD 1080p</span>
+                            </div>
+                        </div>
+                        <div class="action-bar">
+                            <button class="btn-icon" onclick="downloadVideo()"><i class="ri-download-cloud-2-line"></i> Download</button>
+                            <button class="btn-icon"><i class="ri-share-forward-line"></i> Share</button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
-            <div id="result-view" class="view-state">
-                <div class="video-wrapper">
-                    <video id="final-video" controls loop>
-                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
-                        Browser Anda tidak mendukung video tag.
-                    </video>
-                </div>
-                <div class="action-buttons">
-                    <button class="btn-secondary" onclick="resetApp()">Buat Lagi</button>
-                    <button class="btn-primary">Unduh HD <i class="fa-solid fa-download"></i></button>
-                </div>
-            </div>
+            <section class="history-section">
+                <h3>Riwayat Generasi</h3>
+                <div class="history-grid" id="historyGrid">
+                    </div>
+            </section>
 
-        </section>
-    </main>
+        </main>
+    </div>
 
-    <section class="features">
-        <div class="feature-card">
-            <i class="fa-solid fa-bolt"></i>
-            <h3>Cepat</h3>
-            <p>Rendering dalam hitungan detik.</p>
-        </div>
-        <div class="feature-card">
-            <i class="fa-solid fa-image"></i>
-            <h3>Kualitas Tinggi</h3>
-            <p>Mendukung hingga resolusi 4K.</p>
-        </div>
-        <div class="feature-card">
-            <i class="fa-solid fa-lock"></i>
-            <h3>Aman</h3>
-            <p>Data prompt Anda terenkripsi.</p>
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2024 AI Vision Generator. Dibuat dengan Kode HTML/CSS/JS.</p>
-    </footer>
+    <div id="toast-container"></div>
 
     <script src="script.js"></script>
 </body>
 </html>
-/* Reset & Variabel */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 :root {
-    --bg-color: #0f0f12;
-    --card-bg: #1a1a20;
-    --primary: #6c5ce7;
-    --primary-hover: #5649c0;
-    --text-main: #ffffff;
-    --text-muted: #a0a0a0;
-    --border: #2d2d35;
-    --gradient: linear-gradient(45deg, #6c5ce7, #a29bfe);
+    --bg-dark: #09090b;
+    --panel-bg: #18181b;
+    --border-color: #27272a;
+    --primary: #6366f1;
+    --primary-glow: rgba(99, 102, 241, 0.4);
+    --text-main: #fafafa;
+    --text-muted: #a1a1aa;
+    --success: #10b981;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
 body {
-    background-color: var(--bg-color);
+    background-color: var(--bg-dark);
     color: var(--text-main);
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    overflow: hidden; /* App style */
 }
 
-/* Navbar */
-.navbar {
+/* Layout */
+.app-wrapper {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 5%;
-    border-bottom: 1px solid var(--border);
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background: var(--panel-bg);
+    border-right: 1px solid var(--border-color);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
 }
 
 .logo {
     font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--primary);
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: var(--text-muted);
-    transition: 0.3s;
-}
-
-.nav-links a:hover {
+    font-weight: 700;
+    margin-bottom: 3rem;
     color: var(--text-main);
-}
-
-.btn-login {
-    background: var(--card-bg);
-    padding: 8px 20px;
-    border-radius: 5px;
-    border: 1px solid var(--border);
-}
-
-/* Hero Section */
-.hero {
-    text-align: center;
-    padding: 3rem 1rem;
-}
-
-.hero h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-}
-
-.gradient-text {
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.hero p {
-    color: var(--text-muted);
-}
-
-/* App Container */
-.app-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    width: 100%;
-}
-
-/* Input Section */
-.input-section {
-    flex: 1;
-    background: var(--card-bg);
-    padding: 2rem;
-    border-radius: 15px;
-    border: 1px solid var(--border);
-    min-width: 300px;
-}
-
-.input-group label, .select-box label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-}
-
-textarea {
-    width: 100%;
-    height: 150px;
-    background: #0f0f12;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: white;
-    padding: 1rem;
-    resize: none;
-    font-size: 1rem;
-}
-
-textarea:focus {
-    outline: 2px solid var(--primary);
-    border-color: transparent;
-}
-
-.options-group {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-.select-box {
-    flex: 1;
-}
-
-select {
-    width: 100%;
-    padding: 10px;
-    background: #0f0f12;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: white;
-}
-
-#generate-btn {
-    width: 100%;
-    margin-top: 2rem;
-    padding: 15px;
-    background: var(--gradient);
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-#generate-btn:hover {
-    transform: scale(1.02);
-    opacity: 0.9;
-}
-
-/* Output Section */
-.output-section {
-    flex: 1;
-    background: var(--card-bg);
-    border-radius: 15px;
-    border: 1px solid var(--border);
-    min-width: 300px;
-    display: flex;
-    justify-content: center;
     align-items: center;
-    min-height: 400px;
-    position: relative;
-    overflow: hidden;
+    gap: 10px;
 }
 
-.view-state {
-    display: none; /* Sembunyikan semua state secara default */
-    text-align: center;
-    width: 100%;
-    padding: 1rem;
-}
+.logo i { color: var(--primary); }
 
-.view-state.active {
-    display: block;
-}
+.nav-menu { list-style: none; flex: 1; }
+.nav-menu li { margin-bottom: 0.5rem; }
 
-#placeholder-view i {
-    font-size: 4rem;
-    color: var(--border);
-    margin-bottom: 1rem;
-}
-
-/* Loader Animation */
-.loader {
-    border: 4px solid var(--border);
-    border-top: 4px solid var(--primary);
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 1rem auto;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.progress-bar {
-    width: 80%;
-    height: 6px;
-    background: var(--border);
-    border-radius: 3px;
-    margin: 10px auto;
-    overflow: hidden;
-}
-
-.progress-fill {
-    height: 100%;
-    width: 0%;
-    background: var(--primary);
-    transition: width 0.3s ease;
-}
-
-/* Result Video */
-.video-wrapper video {
-    width: 100%;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-}
-
-.action-buttons {
-    margin-top: 1.5rem;
+.nav-menu a {
     display: flex;
-    gap: 1rem;
-    justify-content: center;
-}
-
-.btn-secondary, .btn-primary {
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.btn-secondary {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-main);
-}
-
-.btn-primary {
-    background: var(--primary);
-    border: none;
-    color: white;
-}
-
-/* Features & Footer */
-.features {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    padding: 4rem 2rem;
-    flex-wrap: wrap;
-}
-
-.feature-card {
-    background: var(--card-bg);
-    padding: 2rem;
-    border-radius: 10px;
-    text-align: center;
-    width: 250px;
-    border: 1px solid var(--border);
-}
-
-.feature-card i {
-    font-size: 2rem;
-    color: var(--primary);
-    margin-bottom: 1rem;
-}
-
-footer {
-    text-align: center;
-    padding: 2rem;
-    border-top: 1px solid var(--border);
-    margin-top: auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
     color: var(--text-muted);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: 0.2s;
+    font-weight: 500;
 }
 
-/* Responsiveness */
-@media (max-width: 768px) {
-    .app-container {
-        flex-direction: column;
-    }
-}
-// Mengambil elemen dari DOM
-const generateBtn = document.getElementById('generate-btn');
-const promptInput = document.getElementById('prompt');
-const outputArea = document.getElementById('output-area');
-
-// View States
-const placeholderView = document.getElementById('placeholder-view');
-const loadingView = document.getElementById('loading-view');
-const resultView = document.getElementById('result-view');
-
-// Loading Elements
-const progressFill = document.getElementById('progress-fill');
-const loadingText = document.getElementById('loading-text');
-
-function generateVideo() {
-    const text = promptInput.value.trim();
-
-    // Validasi Input
-    if (text === "") {
-        alert("Silakan masukkan deskripsi video terlebih dahulu!");
-        return;
-    }
-
-    // 1. Ubah tampilan ke Loading
-    switchView('loading');
-    generateBtn.disabled = true;
-    generateBtn.innerText = "Sedang Memproses...";
-
-    // 2. Simulasi Proses Loading (Timer 3-5 detik)
-    let progress = 0;
-    const interval = setInterval(() => {
-        progress += Math.floor(Math.random() * 10) + 5;
-        
-        if (progress > 100) progress = 100;
-        
-        // Update Progress Bar
-        progressFill.style.width = `${progress}%`;
-        
-        // Update Teks Loading agar terlihat hidup
-        if (progress < 30) loadingText.innerText = "Menganalisis prompt teks...";
-        else if (progress < 70) loadingText.innerText = "Merender frame video...";
-        else loadingText.innerText = "Menyelesaikan detail akhir...";
-
-        // Jika selesai
-        if (progress === 100) {
-            clearInterval(interval);
-            setTimeout(() => {
-                // 3. Tampilkan Hasil
-                switchView('result');
-                generateBtn.disabled = false;
-                generateBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Buat Video Sekarang';
-                
-                // Mulai putar video otomatis (karena ini sample)
-                const video = document.getElementById('final-video');
-                video.play();
-            }, 800); // Sedikit delay setelah 100%
-        }
-    }, 300); // Update setiap 300ms
-}
-
-function resetApp() {
-    promptInput.value = "";
-    switchView('placeholder');
-}
-
-// Fungsi Helper untuk mengganti tampilan (Placeholder -> Loading -> Result)
-function switchView(viewName) {
-    // Sembunyikan semua
-    placeholderView.classList.remove('active');
-    loadingView.classList.remove('active');
-    resultView.classList.remove('active');
-
-    // Tampilkan yang diminta
-    if (viewName === 'placeholder') {
-        placeholderView.classList.add('active');
-    } else if (viewName === 'loading') {
-        loadingView.classList.add('active');
-        // Reset progress bar
-        progressFill.style.width = '0%';
-    } else if (viewName === 'result') {
-        resultView.classList.add('active');
-    }
-}
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<title>AI Video Player</title>
-<style>
-body {
-  background: #0f172a;
-  color: white;
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.container {
-  width: 700px;
-  text-align: center;
-}
-
-canvas {
-  background: black;
-  margin-top: 15px;
-  border-radius: 10px;
-}
-
-.subtitle {
-  margin-top: 10px;
-  font-size: 18px;
-  color: #00ffcc;
-}
-</style>
-</head>
-<body>
-
-<div class="container">
-  <h1>🤖 AI Generated Video</h1>
-  <canvas id="canvas" width="640" height="360"></canvas>
-  <div class="subtitle" id="subtitle"></div>
-</div>
-
-<script>
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const subtitle = document.getElementById("subtitle");
-
-const text =
-"Selamat datang. Ini adalah contoh video AI yang dibuat menggunakan HTML, JavaScript, dan suara otomatis.";
-
-let x = canvas.width;
-let frame = 0;
-
-// AI VOICE
-function speakAI(text){
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = "id-ID";
-  u.rate = 0.95;
-  u.pitch = 1;
-  speechSynthesis.speak(u);
-}
-
-// VIDEO ANIMATION
-function playVideo(){
-  subtitle.innerText = text;
-
-  const anim = setInterval(() => {
-    ctx.fillStyle = "black";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-
-    ctx.fillStyle = "white";
-    ctx.font = "32px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText("AI VIDEO DEMO", canvas.width/2, 80);
-
-    ctx.font = "24px Arial";
-    ctx.fillText(text, x, canvas.height/2);
-
-    x -= 2;
-    frame++;
-
-    if(frame > 300){
-      clearInterval(anim);
-    }
-  }, 33);
-}
-
-// AUTO PLAY
-setTimeout(() => {
-  speakAI(text);
-  playVideo();
-}, 500);
-</script>
-
-</body>
-</html>
-/* Reset & Variabel */
-:root {
-    --bg-color: #0f0f12;
-    --card-bg: #1a1a20;
-    --primary: #6c5ce7;
-    --primary-hover: #5649c0;
-    --text-main: #ffffff;
-    --text-muted: #a0a0a0;
-    --border: #2d2d35;
-    --gradient: linear-gradient(45deg, #6c5ce7, #a29bfe);
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-    background-color: var(--bg-color);
+.nav-menu li.active a, .nav-menu a:hover {
+    background: rgba(255, 255, 255, 0.05);
     color: var(--text-main);
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
 }
 
-/* Navbar */
-.navbar {
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.user-profile img { width: 40px; border-radius: 50%; }
+.user-info h4 { font-size: 0.9rem; }
+.user-info p { font-size: 0.8rem; color: var(--text-muted); }
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+    position: relative;
+}
+
+/* Header */
+.top-bar {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 5%;
-    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
 }
 
-.logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--primary);
+.breadcrumbs { color: var(--text-muted); font-size: 0.9rem; }
+.current { color: var(--text-main); font-weight: 500; }
+.credits { 
+    background: rgba(99, 102, 241, 0.1); 
+    color: var(--primary); 
+    padding: 6px 12px; 
+    border-radius: 20px; 
+    font-size: 0.85rem; 
+    font-weight: 600;
 }
 
-.nav-links {
-    list-style: none;
+/* Studio Grid */
+.studio-grid {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 1.5rem;
+    height: calc(100vh - 250px);
+}
+
+.panel {
+    background: #131316;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.5rem;
     display: flex;
-    gap: 20px;
+    flex-direction: column;
 }
 
-.nav-links a {
-    text-decoration: none;
+/* Left Controls */
+.controls-panel h3 { margin-bottom: 1.5rem; font-size: 1.1rem; display: flex; gap: 8px; }
+
+.form-group { margin-bottom: 1.2rem; }
+.form-group label { display: block; font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--text-muted); }
+
+textarea, input[type="text"], select {
+    width: 100%;
+    background: #09090b;
+    border: 1px solid var(--border-color);
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: 0.2s;
+}
+
+textarea { height: 120px; resize: none; }
+textarea:focus, input:focus, select:focus { border-color: var(--primary); }
+
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
+
+.aspect-selector { display: flex; gap: 5px; background: #09090b; padding: 4px; border-radius: 8px; border: 1px solid var(--border-color); }
+.aspect-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
     color: var(--text-muted);
+    padding: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+.aspect-btn.active { background: #27272a; color: white; }
+
+#generateBtn {
+    margin-top: auto;
+    width: 100%;
+    padding: 14px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
     transition: 0.3s;
 }
 
-.nav-links a:hover {
-    color: var(--text-main);
-}
+#generateBtn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px var(--primary-glow); }
 
-.btn-login {
-    background: var(--card-bg);
-    padding: 8px 20px;
-    border-radius: 5px;
-    border: 1px solid var(--border);
-}
-
-/* Hero Section */
-.hero {
-    text-align: center;
-    padding: 3rem 1rem;
-}
-
-.hero h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-}
-
-.gradient-text {
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.hero p {
-    color: var(--text-muted);
-}
-
-/* App Container */
-.app-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    width: 100%;
-}
-
-/* Input Section */
-.input-section {
-    flex: 1;
-    background: var(--card-bg);
-    padding: 2rem;
-    border-radius: 15px;
-    border: 1px solid var(--border);
-    min-width: 300px;
-}
-
-.input-group label, .select-box label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-}
-
-textarea {
-    width: 100%;
-    height: 150px;
-    background: #0f0f12;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: white;
-    padding: 1rem;
-    resize: none;
-    font-size: 1rem;
-}
-
-textarea:focus {
-    outline: 2px solid var(--primary);
-    border-color: transparent;
-}
-
-.options-group {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-.select-box {
-    flex: 1;
-}
-
-select {
-    width: 100%;
-    padding: 10px;
-    background: #0f0f12;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: white;
-}
-
-#generate-btn {
-    width: 100%;
-    margin-top: 2rem;
-    padding: 15px;
-    background: var(--gradient);
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-#generate-btn:hover {
-    transform: scale(1.02);
-    opacity: 0.9;
-}
-
-/* Output Section */
-.output-section {
-    flex: 1;
-    background: var(--card-bg);
-    border-radius: 15px;
-    border: 1px solid var(--border);
-    min-width: 300px;
-    display: flex;
+/* Right Preview Panel */
+.preview-panel {
+    position: relative;
     justify-content: center;
     align-items: center;
-    min-height: 400px;
-    position: relative;
-    overflow: hidden;
+    background: radial-gradient(circle at center, #1c1c21 0%, #131316 100%);
 }
 
-.view-state {
-    display: none; /* Sembunyikan semua state secara default */
-    text-align: center;
-    width: 100%;
-    padding: 1rem;
+.state-view { display: none; width: 100%; height: 100%; flex-direction: column; justify-content: center; align-items: center; }
+.state-view.active { display: flex; }
+
+/* Empty State */
+.empty-state { text-align: center; color: var(--text-muted); }
+.empty-state i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+
+/* Loading State (Terminal) */
+.terminal-loader { width: 100%; max-width: 400px; }
+.spinner-ring {
+    width: 40px; height: 40px; border: 3px solid var(--border-color);
+    border-top: 3px solid var(--primary); border-radius: 50%;
+    animation: spin 1s linear infinite; margin: 0 auto 1.5rem auto;
 }
-
-.view-state.active {
-    display: block;
+.terminal-log {
+    background: #000; font-family: 'Courier New', monospace;
+    font-size: 0.85rem; color: var(--success); padding: 1rem;
+    border-radius: 8px; border: 1px solid var(--border-color);
+    height: 100px; overflow: hidden; margin-bottom: 1rem; opacity: 0.8;
 }
+.progress-container { width: 100%; height: 4px; background: #27272a; border-radius: 2px; }
+.progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.2s; }
 
-#placeholder-view i {
-    font-size: 4rem;
-    color: var(--border);
-    margin-bottom: 1rem;
+/* Result State */
+.video-container { width: 100%; height: 85%; position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+video { width: 100%; height: 100%; object-fit: cover; }
+.action-bar { margin-top: 1rem; display: flex; gap: 1rem; }
+.btn-icon { background: #27272a; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; display: flex; gap: 8px; align-items: center; transition: 0.2s; }
+.btn-icon:hover { background: #3f3f46; }
+
+/* History Bottom */
+.history-section { margin-top: 2rem; }
+.history-section h3 { font-size: 1rem; margin-bottom: 1rem; color: var(--text-muted); }
+.history-grid { display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 10px; }
+.history-item { min-width: 150px; height: 90px; border-radius: 8px; overflow: hidden; position: relative; cursor: pointer; border: 2px solid transparent; }
+.history-item:hover { border-color: var(--primary); }
+.history-item img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Toast */
+#toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+.toast { background: #27272a; color: white; padding: 12px 24px; border-radius: 8px; margin-top: 10px; border-left: 4px solid var(--primary); animation: slideIn 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .app-wrapper { flex-direction: column; height: auto; }
+    .sidebar { width: 100%; height: auto; flex-direction: row; justify-content: space-between; align-items: center; padding: 1rem; }
+    .nav-menu, .user-profile { display: none; }
+    .studio-grid { grid-template-columns: 1fr; height: auto; }
+    .main-content { overflow: visible; }
 }
+// Konfigurasi DOM
+const generateBtn = document.getElementById('generateBtn');
+const promptInput = document.getElementById('promptInput');
+const aspectBtns = document.querySelectorAll('.aspect-btn');
+const terminalLog = document.getElementById('terminalLog');
+const progressBar = document.getElementById('progressBar');
+const outputVideo = document.getElementById('outputVideo');
+const historyGrid = document.getElementById('historyGrid');
 
-/* Loader Animation */
-.loader {
-    border: 4px solid var(--border);
-    border-top: 4px solid var(--primary);
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 1rem auto;
-}
+// Database Sample Video (Simulasi Hasil Berbeda)
+const sampleVideos = [
+    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
+];
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+// Database Log Messages (Simulasi Terminal)
+const logMessages = [
+    "Connecting to neural engine...",
+    "Tokenizing text prompt...",
+    "Generating latent noise...",
+    "Denoising step 10/50...",
+    "Denoising step 35/50...",
+    "Upscaling to 1080p...",
+    "Applying post-processing filters...",
+    "Rendering final frames..."
+];
 
-.progress-bar {
-    width: 80%;
-    height: 6px;
-    background: var(--border);
-    border-radius: 3px;
-    margin: 10px auto;
-    overflow: hidden;
-}
+// Handle Aspect Ratio Selection
+aspectBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelector('.aspect-btn.active').classList.remove('active');
+        btn.classList.add('active');
+    });
+});
 
-.progress-fill {
-    height: 100%;
-    width: 0%;
-    background: var(--primary);
-    transition: width 0.3s ease;
-}
-
-/* Result Video */
-.video-wrapper video {
-    width: 100%;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-}
-
-.action-buttons {
-    margin-top: 1.5rem;
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-}
-
-.btn-secondary, .btn-primary {
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.btn-secondary {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-main);
-}
-
-.btn-primary {
-    background: var(--primary);
-    border: none;
-    color: white;
-}
-
-/* Features & Footer */
-.features {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    padding: 4rem 2rem;
-    flex-wrap: wrap;
-}
-
-.feature-card {
-    background: var(--card-bg);
-    padding: 2rem;
-    border-radius: 10px;
-    text-align: center;
-    width: 250px;
-    border: 1px solid var(--border);
-}
-
-.feature-card i {
-    font-size: 2rem;
-    color: var(--primary);
-    margin-bottom: 1rem;
-}
-
-footer {
-    text-align: center;
-    padding: 2rem;
-    border-top: 1px solid var(--border);
-    margin-top: auto;
-    color: var(--text-muted);
-}
-
-/* Responsiveness */
-@media (max-width: 768px) {
-    .app-container {
-        flex-direction: column;
-    }
-}
-// Mengambil elemen dari DOM
-const generateBtn = document.getElementById('generate-btn');
-const promptInput = document.getElementById('prompt');
-const outputArea = document.getElementById('output-area');
-
-// View States
-const placeholderView = document.getElementById('placeholder-view');
-const loadingView = document.getElementById('loading-view');
-const resultView = document.getElementById('result-view');
-
-// Loading Elements
-const progressFill = document.getElementById('progress-fill');
-const loadingText = document.getElementById('loading-text');
-
-function generateVideo() {
+function startGeneration() {
     const text = promptInput.value.trim();
 
-    // Validasi Input
-    if (text === "") {
-        alert("Silakan masukkan deskripsi video terlebih dahulu!");
+    if (!text) {
+        showToast("Error: Masukkan prompt terlebih dahulu!", "error");
+        promptInput.focus();
         return;
     }
 
-    // 1. Ubah tampilan ke Loading
-    switchView('loading');
+    // Switch to Loading View
+    switchState('processing');
     generateBtn.disabled = true;
-    generateBtn.innerText = "Sedang Memproses...";
+    generateBtn.innerHTML = `<i class="ri-loader-4-line"></i> Generating...`;
 
-    // 2. Simulasi Proses Loading (Timer 3-5 detik)
+    // Reset Logs
+    terminalLog.innerHTML = `<p>> Job started...</p>`;
+    progressBar.style.width = "0%";
+
+    // Jalankan Simulasi
+    runSimulation();
+}
+
+function runSimulation() {
     let progress = 0;
+    let logIndex = 0;
+
     const interval = setInterval(() => {
-        progress += Math.floor(Math.random() * 10) + 5;
+        progress += Math.floor(Math.random() * 5) + 2; // Random increment
         
         if (progress > 100) progress = 100;
-        
-        // Update Progress Bar
-        progressFill.style.width = `${progress}%`;
-        
-        // Update Teks Loading agar terlihat hidup
-        if (progress < 30) loadingText.innerText = "Menganalisis prompt teks...";
-        else if (progress < 70) loadingText.innerText = "Merender frame video...";
-        else loadingText.innerText = "Menyelesaikan detail akhir...";
+        progressBar.style.width = `${progress}%`;
 
-        // Jika selesai
+        // Tambahkan Log secara bertahap
+        if (progress > (logIndex + 1) * 12 && logIndex < logMessages.length) {
+            const p = document.createElement('p');
+            p.innerText = `> ${logMessages[logIndex]}`;
+            terminalLog.appendChild(p);
+            terminalLog.scrollTop = terminalLog.scrollHeight; // Auto scroll ke bawah
+            logIndex++;
+        }
+
         if (progress === 100) {
             clearInterval(interval);
-            setTimeout(() => {
-                // 3. Tampilkan Hasil
-                switchView('result');
-                generateBtn.disabled = false;
-                generateBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Buat Video Sekarang';
-                
-                // Mulai putar video otomatis (karena ini sample)
-                const video = document.getElementById('final-video');
-                video.play();
-            }, 800); // Sedikit delay setelah 100%
+            finishGeneration();
         }
-    }, 300); // Update setiap 300ms
+    }, 150);
 }
 
-function resetApp() {
-    promptInput.value = "";
-    switchView('placeholder');
+function finishGeneration() {
+    setTimeout(() => {
+        switchState('result');
+        
+        // Pick Random Video
+        const randomVid = sampleVideos[Math.floor(Math.random() * sampleVideos.length)];
+        outputVideo.src = randomVid;
+        outputVideo.play();
+
+        // Reset Button
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = `<span>Generate Video</span><div class="btn-glow"></div>`;
+        
+        showToast("Success: Video berhasil dibuat!", "success");
+        addToHistory(randomVid);
+
+    }, 1000);
 }
 
-// Fungsi Helper untuk mengganti tampilan (Placeholder -> Loading -> Result)
-function switchView(viewName) {
-    // Sembunyikan semua
-    placeholderView.classList.remove('active');
-    loadingView.classList.remove('active');
-    resultView.classList.remove('active');
+function addToHistory(url) {
+    // Membuat elemen history item
+    const div = document.createElement('div');
+    div.className = 'history-item';
+    // Karena ini video, kita pakai thumbnail statis placeholder atau video kecil
+    div.innerHTML = `<video src="${url}" muted onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0;"></video>`;
+    
+    // Klik history untuk memuat ulang ke player utama
+    div.onclick = () => {
+        outputVideo.src = url;
+        outputVideo.play();
+        switchState('result');
+    };
 
-    // Tampilkan yang diminta
-    if (viewName === 'placeholder') {
-        placeholderView.classList.add('active');
-    } else if (viewName === 'loading') {
-        loadingView.classList.add('active');
-        // Reset progress bar
-        progressFill.style.width = '0%';
-    } else if (viewName === 'result') {
-        resultView.classList.add('active');
-    }
+    historyGrid.prepend(div);
+}
+
+function downloadVideo() {
+    showToast("Memulai unduhan...", "success");
+    // Logika unduh fiktif
+}
+
+// Helper: Switch View States
+function switchState(stateName) {
+    document.querySelectorAll('.state-view').forEach(el => el.classList.remove('active'));
+    
+    if (stateName === 'processing') document.getElementById('processingState').classList.add('active');
+    else if (stateName === 'result') document.getElementById('resultState').classList.add('active');
+    else document.getElementById('placeholderState').classList.add('active');
+}
+
+// Helper: Custom Toast Notification
+function showToast(message, type) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerText = message;
+    
+    if (type === 'error') toast.style.borderLeftColor = '#ef4444';
+    
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
 }
