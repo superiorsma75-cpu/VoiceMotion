@@ -1,157 +1,503 @@
-text-to-video-pro/
-├── index.html
-├── style.css
-└── script.js
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>Text to Video PRO</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Vision - Text to Video</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-<div class="app">
-    <h1>🎬 Text to Video PRO</h1>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-robot"></i> AI Vision
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">Beranda</a></li>
+            <li><a href="#">Fitur</a></li>
+            <li><a href="#">Harga</a></li>
+            <li><a href="#" class="btn-login">Masuk</a></li>
+        </ul>
+    </nav>
 
-    <textarea id="textInput" placeholder="Masukkan teks..."></textarea>
+    <header class="hero">
+        <h1>Ubah Imajinasi Menjadi <span class="gradient-text">Video Realistis</span></h1>
+        <p>Ketik deskripsi teks apa saja, dan AI kami akan merendernya menjadi video dalam hitungan detik.</p>
+    </header>
 
-    <select id="animation">
-        <option value="slide">Slide</option>
-        <option value="fade">Fade</option>
-        <option value="zoom">Zoom</option>
-    </select>
+    <main class="app-container">
+        
+        <section class="input-section">
+            <div class="input-group">
+                <label for="prompt">Deskripsi Video (Prompt)</label>
+                <textarea id="prompt" placeholder="Contoh: Seekor kucing astronot sedang berjalan di permukaan bulan dengan latar belakang bumi..."></textarea>
+            </div>
 
-    <select id="resolution">
-        <option value="640x360">480p</option>
-        <option value="1280x720">720p</option>
-    </select>
+            <div class="options-group">
+                <div class="select-box">
+                    <label>Gaya Visual</label>
+                    <select id="style-select">
+                        <option value="realistic">Realistis</option>
+                        <option value="anime">Anime / Kartun</option>
+                        <option value="cinematic">Sinematik 4K</option>
+                        <option value="3d">3D Render</option>
+                    </select>
+                </div>
+                <div class="select-box">
+                    <label>Durasi</label>
+                    <select id="duration-select">
+                        <option value="5">5 Detik</option>
+                        <option value="10">10 Detik</option>
+                    </select>
+                </div>
+            </div>
 
-    <input type="file" id="music" accept="audio/*">
+            <button id="generate-btn" onclick="generateVideo()">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Buat Video Sekarang
+            </button>
+        </section>
 
-    <button onclick="generate()">🎥 Buat Video</button>
+        <section class="output-section" id="output-area">
+            
+            <div id="placeholder-view" class="view-state active">
+                <i class="fa-solid fa-film"></i>
+                <p>Video hasil akan muncul di sini</p>
+            </div>
 
-    <canvas id="canvas"></canvas>
+            <div id="loading-view" class="view-state">
+                <div class="loader"></div>
+                <p id="loading-text">Sedang memproses AI...</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
 
-    <a id="download" download="video-pro.webm">⬇ Download Video</a>
-</div>
+            <div id="result-view" class="view-state">
+                <div class="video-wrapper">
+                    <video id="final-video" controls loop>
+                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                        Browser Anda tidak mendukung video tag.
+                    </video>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn-secondary" onclick="resetApp()">Buat Lagi</button>
+                    <button class="btn-primary">Unduh HD <i class="fa-solid fa-download"></i></button>
+                </div>
+            </div>
 
-<script src="script.js"></script>
+        </section>
+    </main>
+
+    <section class="features">
+        <div class="feature-card">
+            <i class="fa-solid fa-bolt"></i>
+            <h3>Cepat</h3>
+            <p>Rendering dalam hitungan detik.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fa-solid fa-image"></i>
+            <h3>Kualitas Tinggi</h3>
+            <p>Mendukung hingga resolusi 4K.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fa-solid fa-lock"></i>
+            <h3>Aman</h3>
+            <p>Data prompt Anda terenkripsi.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 AI Vision Generator. Dibuat dengan Kode HTML/CSS/JS.</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
+/* Reset & Variabel */
+:root {
+    --bg-color: #0f0f12;
+    --card-bg: #1a1a20;
+    --primary: #6c5ce7;
+    --primary-hover: #5649c0;
+    --text-main: #ffffff;
+    --text-muted: #a0a0a0;
+    --border: #2d2d35;
+    --gradient: linear-gradient(45deg, #6c5ce7, #a29bfe);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 body {
-    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-    font-family: Arial;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 5%;
+    border-bottom: 1px solid var(--border);
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-muted);
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--text-main);
+}
+
+.btn-login {
+    background: var(--card-bg);
+    padding: 8px 20px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.gradient-text {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+    color: var(--text-muted);
+}
+
+/* App Container */
+.app-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    width: 100%;
+}
+
+/* Input Section */
+.input-section {
+    flex: 1;
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 15px;
+    border: 1px solid var(--border);
+    min-width: 300px;
+}
+
+.input-group label, .select-box label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    background: #0f0f12;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: white;
+    padding: 1rem;
+    resize: none;
+    font-size: 1rem;
+}
+
+textarea:focus {
+    outline: 2px solid var(--primary);
+    border-color: transparent;
+}
+
+.options-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.select-box {
+    flex: 1;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    background: #0f0f12;
+    border: 1px solid var(--border);
+    border-radius: 8px;
     color: white;
 }
 
-.app {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
-    text-align: center;
-}
-
-textarea, select, input {
+#generate-btn {
     width: 100%;
-    margin-bottom: 10px;
-    padding: 10px;
-}
-
-button {
-    background: #00c6ff;
+    margin-top: 2rem;
+    padding: 15px;
+    background: var(--gradient);
     border: none;
-    padding: 12px;
-    font-size: 16px;
+    border-radius: 10px;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
     cursor: pointer;
+    transition: transform 0.2s;
 }
 
-canvas {
-    margin-top: 15px;
-    background: black;
+#generate-btn:hover {
+    transform: scale(1.02);
+    opacity: 0.9;
 }
 
-#download {
-    display: none;
-    color: #00ffcc;
+/* Output Section */
+.output-section {
+    flex: 1;
+    background: var(--card-bg);
+    border-radius: 15px;
+    border: 1px solid var(--border);
+    min-width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    position: relative;
+    overflow: hidden;
+}
+
+.view-state {
+    display: none; /* Sembunyikan semua state secara default */
+    text-align: center;
+    width: 100%;
+    padding: 1rem;
+}
+
+.view-state.active {
+    display: block;
+}
+
+#placeholder-view i {
+    font-size: 4rem;
+    color: var(--border);
+    margin-bottom: 1rem;
+}
+
+/* Loader Animation */
+.loader {
+    border: 4px solid var(--border);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.progress-bar {
+    width: 80%;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    margin: 10px auto;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--primary);
+    transition: width 0.3s ease;
+}
+
+/* Result Video */
+.video-wrapper video {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.action-buttons {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn-secondary, .btn-primary {
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
     font-weight: bold;
 }
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const download = document.getElementById("download");
 
-function speak(text){
-    let u = new SpeechSynthesisUtterance(text);
-    u.lang = "id-ID";
-    speechSynthesis.speak(u);
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-main);
 }
 
-function generate(){
-    const text = textInput.value;
-    const anim = animation.value;
-    const [w,h] = resolution.value.split("x");
+.btn-primary {
+    background: var(--primary);
+    border: none;
+    color: white;
+}
 
-    canvas.width = w;
-    canvas.height = h;
+/* Features & Footer */
+.features {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 4rem 2rem;
+    flex-wrap: wrap;
+}
 
-    speak(text);
+.feature-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    width: 250px;
+    border: 1px solid var(--border);
+}
 
-    const stream = canvas.captureStream(30);
-    const recorder = new MediaRecorder(stream);
-    let chunks = [];
+.feature-card i {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
 
-    recorder.ondataavailable = e => chunks.push(e.data);
-    recorder.onstop = () => {
-        const blob = new Blob(chunks,{type:"video/webm"});
-        download.href = URL.createObjectURL(blob);
-        download.style.display = "block";
-    };
+footer {
+    text-align: center;
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+    color: var(--text-muted);
+}
 
-    recorder.start();
+/* Responsiveness */
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+    }
+}
+// Mengambil elemen dari DOM
+const generateBtn = document.getElementById('generate-btn');
+const promptInput = document.getElementById('prompt');
+const outputArea = document.getElementById('output-area');
 
-    let frame = 0;
-    let scale = 1;
-    let alpha = 1;
+// View States
+const placeholderView = document.getElementById('placeholder-view');
+const loadingView = document.getElementById('loading-view');
+const resultView = document.getElementById('result-view');
 
-    const interval = setInterval(()=>{
-        ctx.fillStyle = "black";
-        ctx.fillRect(0,0,w,h);
+// Loading Elements
+const progressFill = document.getElementById('progress-fill');
+const loadingText = document.getElementById('loading-text');
 
-        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-        ctx.font = `${40*scale}px Arial`;
-        ctx.textAlign = "center";
+function generateVideo() {
+    const text = promptInput.value.trim();
 
-        if(anim === "slide") ctx.fillText(text,w-frame*5,h/2);
-        if(anim === "fade"){ alpha -= 0.01; ctx.fillText(text,w/2,h/2); }
-        if(anim === "zoom"){ scale += 0.01; ctx.fillText(text,w/2,h/2); }
+    // Validasi Input
+    if (text === "") {
+        alert("Silakan masukkan deskripsi video terlebih dahulu!");
+        return;
+    }
 
-        frame++;
-        if(frame > 300){
+    // 1. Ubah tampilan ke Loading
+    switchView('loading');
+    generateBtn.disabled = true;
+    generateBtn.innerText = "Sedang Memproses...";
+
+    // 2. Simulasi Proses Loading (Timer 3-5 detik)
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 10) + 5;
+        
+        if (progress > 100) progress = 100;
+        
+        // Update Progress Bar
+        progressFill.style.width = `${progress}%`;
+        
+        // Update Teks Loading agar terlihat hidup
+        if (progress < 30) loadingText.innerText = "Menganalisis prompt teks...";
+        else if (progress < 70) loadingText.innerText = "Merender frame video...";
+        else loadingText.innerText = "Menyelesaikan detail akhir...";
+
+        // Jika selesai
+        if (progress === 100) {
             clearInterval(interval);
-            recorder.stop();
+            setTimeout(() => {
+                // 3. Tampilkan Hasil
+                switchView('result');
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Buat Video Sekarang';
+                
+                // Mulai putar video otomatis (karena ini sample)
+                const video = document.getElementById('final-video');
+                video.play();
+            }, 800); // Sedikit delay setelah 100%
         }
-    },33);
+    }, 300); // Update setiap 300ms
 }
-package com.texttovideo.pro;
 
-import android.os.Bundle;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import androidx.appcompat.app.AppCompatActivity;
+function resetApp() {
+    promptInput.value = "";
+    switchView('placeholder');
+}
 
-public class MainActivity extends AppCompatActivity {
+// Fungsi Helper untuk mengganti tampilan (Placeholder -> Loading -> Result)
+function switchView(viewName) {
+    // Sembunyikan semua
+    placeholderView.classList.remove('active');
+    loadingView.classList.remove('active');
+    resultView.classList.remove('active');
 
-    @Override
-    protected void onCreate(Bundle b) {
-        super.onCreate(b);
-
-        WebView web = new WebView(this);
-        WebSettings s = web.getSettings();
-        s.setJavaScriptEnabled(true);
-        s.setAllowFileAccess(true);
-        s.setMediaPlaybackRequiresUserGesture(false);
-
-        web.loadUrl("file:///android_asset/index.html");
-        setContentView(web);
+    // Tampilkan yang diminta
+    if (viewName === 'placeholder') {
+        placeholderView.classList.add('active');
+    } else if (viewName === 'loading') {
+        loadingView.classList.add('active');
+        // Reset progress bar
+        progressFill.style.width = '0%';
+    } else if (viewName === 'result') {
+        resultView.classList.add('active');
     }
 }
